@@ -5,13 +5,11 @@
 
     assign cart_products = cart.items
 
-    assign products = []
-
     for product in collection_products
         for product_c in cart_products
-            {% unless product.id == product_c.id %}
-                assign products =  products | append: product
-            {% endunless %}
+            unless product.id == product_c.id 
+                assign products =  products | concat: product
+            endunless 
         endfor
     endfor
  %}
@@ -19,7 +17,18 @@
 <h2 class="test-featured__title">{{ section.settings.title }}</h2>
 
 <div class="test-featured__products">
-    {% for product in products limit: 4 %}
+    {% for product in collection_products %}
+        {% liquid
+            assign in_cart = false
+
+            for product_c in cart_products
+                if product.selected_or_first_available_variant.id == product_c.id
+                    assign in_cart = true
+                endif 
+            endfor 
+        %}
+        {% unless in_cart == true %}
+
         <div class="featured-card">
             <a href="{{ product.url }}" class="featured-card__img">
                 <img src="{{ product.featured_image | img_url: '375x' }}" 
@@ -33,12 +42,13 @@
 
             {% form 'product', product, class: form_classes, novalidate: 'novalidate', data-product-form: '' %}
                 {{ form | payment_terms }}
-                <input type="hidden" name="id" value="{{ product.id }}">
-                <button type="button" data-var-id="{{ product.id }}" data-js="add-to-cart-btn" class="featured-card__btn" name="add">
+                <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                <button type="button" data-var-id="{{ product.selected_or_first_available_variant.id }}" data-js="add-to-cart-btn" class="featured-card__btn" name="add">
                     <span class="btn__value">Add to cart - {{ product.price | money }}</span>
                 </button> 
             {% endform %}
         </div>
+        {% endunless %}
     {% endfor %}
 </div>
 
