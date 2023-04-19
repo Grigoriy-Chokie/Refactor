@@ -1,0 +1,71 @@
+{{ 'sections-test-featured-products.css' | asset_url | stylesheet_tag }}
+
+{% liquid
+    assign collection_products = section.settings.featured_collection.products
+
+    assign cart_products = cart.items
+
+    assign products = []
+
+    for product in collection_products
+        for product_c in cart_products
+            {% unless product.id == product_c.id %}
+                assign products =  products | append: product
+            {% endunless %}
+        endfor
+    endfor
+ %}
+
+<h2 class="test-featured__title">{{ section.settings.title }}</h2>
+
+<div class="test-featured__products">
+    {% for product in products limit: 4 %}
+        <div class="featured-card">
+            <a href="{{ product.url }}" class="featured-card__img">
+                <img src="{{ product.featured_image | img_url: '375x' }}" 
+                        srcset="{{ product.featured_image | img_url: '520x' }} 520w"
+                        alt="{{ product.featured_image.alt }}" 
+                        width="375px" 
+                        height="260px">
+            </a>
+
+            <h3 class="featured-card__title">{{ product.title }}</h3>
+
+            {% form 'product', product, class: form_classes, novalidate: 'novalidate', data-product-form: '' %}
+                {{ form | payment_terms }}
+                <input type="hidden" name="id" value="{{ product.id }}">
+                <button type="button" data-var-id="{{ product.id }}" data-js="add-to-cart-btn" class="featured-card__btn" name="add">
+                    <span class="btn__value">Add to cart - {{ product.price | money }}</span>
+                </button> 
+            {% endform %}
+        </div>
+    {% endfor %}
+</div>
+
+<script src="{{ 'sections-test-featured-products.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "Featured Product",
+  "class": "section test-featured",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section`s title",
+      "default": "Featured products"
+    },
+    {
+      "type": "collection",
+      "id": "featured_collection",
+      "label": "Select Your Featured Collection"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Product"
+    }
+  ]
+}
+{% endschema %}

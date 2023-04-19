@@ -1,0 +1,81 @@
+
+.test-featured {
+    padding: 45px 0 60px;
+
+    &__title {
+        font-weight: 900;
+        font-size: 26px;
+        line-height: 36px;
+        text-align: center;
+        color: #656874;
+    }
+
+    &__products {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 50px;
+    }
+
+    @media screen and (min-width: 768px) {
+        &__title {
+            font-size: 42px;
+            line-height: 42px;
+        }
+
+        &__products {
+            column-gap: 40px;
+            row-gap: 120px;
+        }
+    }
+}
+
+.featured-card {
+    width: 100%;
+    max-width: 520px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+    &__img {
+        width: 100%;
+        overflow: hidden;
+        display: block;
+        aspect-ratio: 3/2;
+        
+        & > img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+
+    &__title {
+        font-weight: 700;
+        font-size: 22px;
+        text-align: center;
+        color: #656874;
+    }
+
+    &__btn {
+        background: #464B90;
+        border: 1px solid #464B90;
+        color: #FFFFFF;
+        border-radius: 40px;
+        padding: 20px;
+        width: 285px;
+
+        & span {
+            font-weight: 400;
+            font-size: 16px;
+            text-align: center;
+            
+        }
+
+        &:hover {
+            background: transparent;
+            color: #464B90;
+        }
+    }
+}
+
