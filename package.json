@@ -1,0 +1,27 @@
+{
+    "name": "nexusmedia-theme",
+    "private": true,
+    "version": "1.0.0",
+    "scripts": {
+        "format": "prettier --write '**/*.{js,css,scss,sass,json,md}'",
+        "build": "node cactus.js - --oneshot",
+        "buildpush": "node cactus.js - --oneshot && cd dist && shopify theme push",
+        "dev": "node cactus.js",
+        "serve": "cd dist && shopify theme serve --poll",
+        "push": "cd dist && shopify theme push",
+        "check": "node checker.js",
+        "gen:section": "node cactus.js - --generate --section",
+        "gen:sect": "node cactus.js - --generate --section",
+        "gen:snippet": "node cactus.js - --generate --snippet",
+        "gen:snip": "node cactus.js - --generate --snippet"
+    },
+    "devDependencies": {
+        "@babel/preset-env": "^7.17.10",
+        "@shopify/polaris-tokens": "^5.5.0",
+        "chalk": "^4.1.2",
+        "http-server": "^14.1.1",
+        "open": "^8.4.0",
+        "prettier": "^2.6.2",
+        "socket.io": "^4.5.1"
+    }
+}
