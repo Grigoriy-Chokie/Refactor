@@ -45,7 +45,13 @@ if (!customElements.get('featured-card')) {
                 .then(res => res.json()).then(addData => {
                     publish(PUB_SUB_EVENTS.cartUpdate, {source: 'featured-card', productVariantId: addData.variant_id})
                     this.cart.renderContents(addData);
-                    setTimeout(() => this.remove(), 500);
+                    let section = this.closest("section");
+                    let s_id = section.id.slice(16);
+                    fetch(window.Shopify.routes.root + `?section_id=${s_id}`)
+                    .then(res => res.text())
+                    .then((res) => {
+                        section.innerHTML = res;
+                    })
                 });
             }
         }

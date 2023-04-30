@@ -12,6 +12,8 @@
             endunless 
         endfor
     endfor
+
+    assign quant = 0
  %}
 
 <h2 class="test-featured__title">{{ section.settings.title }}</h2>
@@ -28,26 +30,29 @@
             endfor 
         %}
         {% unless in_cart == true %}
+          <featured-card class="featured-card">
+              <a href="{{ product.url }}" class="featured-card__img">
+                  <img src="{{ product.featured_image | img_url: '375x' }}" 
+                          srcset="{{ product.featured_image | img_url: '520x' }} 520w"
+                          alt="{{ product.featured_image.alt }}" 
+                          width="375px" 
+                          height="260px">
+              </a>
 
-        <featured-card class="featured-card">
-            <a href="{{ product.url }}" class="featured-card__img">
-                <img src="{{ product.featured_image | img_url: '375x' }}" 
-                        srcset="{{ product.featured_image | img_url: '520x' }} 520w"
-                        alt="{{ product.featured_image.alt }}" 
-                        width="375px" 
-                        height="260px">
-            </a>
+              <a href="{{ product.url }}" class="featured-card__title">{{ product.title }}</a>
 
-            <a href="{{ product.url }}" class="featured-card__title">{{ product.title }}</a>
-
-            
-              <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
-              <button type="submit" data-var-id="{{ product.selected_or_first_available_variant.id }}" data-js="add-to-cart-btn" class="featured-card__btn" name="add">
-                  <span class="btn__value">Add to cart - {{ product.price | money }}</span>
-              </button> 
-        </featured-card>
+              
+                <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                <button type="submit" data-var-id="{{ product.selected_or_first_available_variant.id }}" data-js="add-to-cart-btn" class="featured-card__btn" name="add">
+                    <span class="btn__value">Add to cart - {{ product.price | money }}</span>
+                </button> 
+          </featured-card>
+          {% assign quant = 1 %}
         {% endunless %}
     {% endfor %}
+        {% if quant == 0 %}
+          We don`t have products for you :(
+        {% endif %}
 </div>
 
 <script src="{{ 'sections-test-featured-products.js' | asset_url }}" defer="defer"></script>
