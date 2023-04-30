@@ -4,6 +4,7 @@ if (!customElements.get('featured-card')) {
             super();
     
             this.handleBtnClick = this.handleBtnClick.bind(this);
+            this.cart = document.querySelector('cart-notification') || document.querySelector('cart-drawer');
         }
     
         connectedCallback() {
@@ -27,25 +28,24 @@ if (!customElements.get('featured-card')) {
                 formData.set("quantity", 1);
                 this.style.opacity = 0.5;
                 this.style.pointerEvents = "none";
-                fetch(urlAdd, {
-                    method: "POST",
-                    body: formData
-                }).then(res => res.json()).then(addData => {
-                    fetch(urlGet).then(res => res.json()).then(getData => {
-                    // const headerCartQty = document.querySelector("#cart-icon-bubble .cart-count-bubble");
-                    // if (headerCartQty) {
-                    //     headerCartQty.textContent = getData.item_count;
-                    // } else {
-                    //     let iconWrapper = document.querySelector("#cart-icon-bubble");
-                    //     let iconCount = document.createElement("div");
-                    //     iconCount.classList.add("cart-count-bubble");
-                    //     iconCount.textContent = getData.item_count;
-            
-                    //     iconWrapper.appendChild(iconCount);
-                    // }
-                    publish(PUB_SUB_EVENTS.cartUpdate, getData);
-                    });
-                    setTimeout(() => this.remove(), 1000);
+
+                const config = fetchConfig('javascript');
+                config.headers['X-Requested-With'] = 'XMLHttpRequest';
+                delete config.headers['Content-Type'];
+
+
+                if (this.cart) {
+                    formData.append('sections', this.cart.getSectionsToRender().map((section) => section.id));
+                    formData.append('sections_url', window.location.pathname);
+                    this.cart.setActiveElement(document.activeElement);
+                }
+                config.body = formData;
+
+                fetch(urlAdd, config)
+                .then(res => res.json()).then(addData => {
+                    publish(PUB_SUB_EVENTS.cartUpdate, {source: 'featured-card', productVariantId: addData.variant_id})
+                    this.cart.renderContents(addData);
+                    setTimeout(() => this.remove(), 500);
                 });
             }
         }
