@@ -50,7 +50,7 @@ if (!customElements.get('featured-card')) {
                     fetch(window.Shopify.routes.root + `?section_id=${s_id}`)
                     .then(res => res.text())
                     .then((res) => {
-                        section.innerHTML = res;
+                        section.outerHTML = res;
                     })
                 });
             }
